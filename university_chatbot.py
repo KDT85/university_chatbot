@@ -8,14 +8,8 @@ Original file is located at
     https://colab.research.google.com/drive/1UYdJBh-xTCnbe1-Dwx9_XSn2SfLVUZje
 """
 
-# our imports
-import re
-import nltk
-from nltk import pos_tag, ne_chunk
-from nltk.corpus.reader.tagged import sent_tokenize, word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-
+import chat_functions
+import q_a_string
 import tkinter as tk
 
 import webbrowser
@@ -25,149 +19,17 @@ logging.basicConfig(filename = "chatbot.log", level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
 
-nltk.download('wordnet')
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
-nltk.download('words')
 
-# defining our functions
 
-# function to find the best matching question-answer pair
-def find_best_match(user_input, qa_pairs):
-    best_match_pair = None
-    best_match_score = 0
-    for pair in qa_pairs:
-        question = pair["question"]
-        score = get_similarity_score(user_input, question)
-        if score > best_match_score:
-            best_match_pair = pair
-            best_match_score = score
-    return best_match_pair
 
-# function to get the similarity score between two strings
-def get_similarity_score(str1, str2):
-    tokens1 = word_tokenize(str1.lower())
-    tokens2 = word_tokenize(str2.lower())
-    return len(set(tokens1) & set(tokens2))
-
-# function to extract named entities from a string
-def extract_named_entities(text):
-    named_entities = []
-    chunks = ne_chunk(pos_tag(word_tokenize(text)))
-    print(chunks)
-    for subtree in chunks.subtrees():
-        if subtree.label() == 'NE':
-            named_entity = " ".join([token for token, pos in subtree.leaves()])
-            named_entities.append(named_entity)
-    return named_entities
-
-def tokenize_word(txt):
-    tokenized_word = word_tokenize(txt)
-    return tokenized_word
-
-# function to remove stop words
-stop_words = set(stopwords.words('english'))
-def remove_stopwords(text):
-    sent_tokens = sent_tokenize(text)
-    cleaned = []
-    word_tokens = word_tokenize(text)
-    #print(word_tokens)
-    for words in word_tokens:
-        if words not in stop_words:
-            cleaned.append(words)
-
-    joined = " ".join(cleaned)
-    cleaned = joined.split("?")
-    temp_list = []
-    for _ in cleaned:   
-        temp_list.append(_.strip())
-    cleaned = temp_list
-    return joined
-
-# function to lemmatize the text
-lemmatizer = WordNetLemmatizer()
-def lemmatize_word(word):
-    temp_list = []
-    words = tokenize_word(word)
-    for word in words:
-        temp_list.append(lemmatizer.lemmatize(word))
-    joined = " ".join(temp_list)
-    return joined
-
-# a string containg the questions for our chatbot
-A = """The exam season for undergraduate students is from Monday 15 May to Saturday 3 June 2023 and for postgraduate students it varies by department.
-You can access your exam timetable through the university's online portal.
-Due to COVID-19, there may be changes in exam locations so it's best to check with your department.
-The university has a policy on academic integrity during exams which states that only materials specified by the instructor are allowed during exams.
-If you require special accommodations for your exams, you can contact the university's disability services office.
-Calculators are allowed during exams but only certain models are permitted.
-If you experience technical issues during an online exam, you should contact the university's IT helpdesk.
-The process for appealing an exam grade varies by department.
-There are study resources available for students during the exam season such as workshops and tutoring services.
-There is a deadline to withdraw from a course during the exam period but it varies by department.
-If you have a scheduling conflict or medical emergency, you may be able to reschedule an exam but it depends on your department's policy.
-If you arrive late to an exam, you may not be permitted to sit the paper depending on how late you are.
-There are restrictions on personal items in the exam room so it's best to check with your department.
-The policy on bathroom breaks during exams varies by department.
-You can bring a snack or drink into the exam room but again, it depends on your department's policy.
-The length of the exam periods and whether there are breaks between exams varies by department.
-There may be designated quiet study areas on campus during exam season but this also varies by department.
-There are workshops and tutoring services available to help with exam preparation.
-To manage exam stress and anxiety, there are resources available such as counselling services and mindfulness workshops.
-If you feel unwell during an exam, you should inform an invigilator immediately.
-Exam results are usually released within 4 weeks of the end of the exam period and can be accessed through the university's online portal.
-You can request a review of your exam paper but this process varies by department.
-Missing an exam without prior notice may result in penalties or a failing grade, depending on your university.
-This may vary depending on the policies of your university or the location of the exam. It is best to check with your university or exam center for their specific requirements.
-The minimum passing grade for exams may vary depending on the course and university. It is best to check with your course instructor or academic advisor for the specific passing requirements.
-The weight of exams in your overall course grade may vary depending on the course and university. It is best to check your course syllabus or discuss with your course instructor to understand the weight of exams in your course grade
-Yes, many universities offer resources to help students cope with test anxiety. These may include counseling services, stress-management workshops, and other support programs. It is best to check with your university's counseling center or student support services for available resources.
-The specific requirements for exam materials may vary depending on the course and university. It is best to check your course syllabus or ask your course instructor for the specific requirements for each exam.
-You can find information on exam policies specific to your department by checking your department's website or speaking with your departmental academic advisor. You can also check your course syllabus for information on the specific policies for each course exam.
-You may be able to request a review of your exam paper, depending on your university and program. You should check with your academic services or department for specific guidelines and procedures.
-"""
-
-# a string containg answers to the questions
-Q = """When does the exam season start and end?
-How can I access my exam timetable?
-Are there any changes in exam locations due to COVID-19?
-What materials are allowed during exams?
-How do I request special accommodations for my exams?
-Are calculators allowed during exams, and if so, which models?
-What should I do if I experience technical issues during an online exam?
-What is the process for appealing an exam grade?
-Are there any study resources available for students during the exam season?
-Is there a deadline to withdraw from a course during the exam period?
-Can I reschedule an exam if I have a scheduling conflict or medical emergency?
-What should I do if I arrive late to an exam?
-Are there any restrictions on personal items in the exam room?
-What is the policy on bathroom breaks during exams?
-Can I bring a snack or drink into the exam room?
-How long are the exam periods and are there breaks between exams?
-Are there designated quiet study areas on campus during exam season?
-Are there any workshops or tutoring services available to help with exam preparation?
-How can I manage exam stress and anxiety?
-What should I do if I feel unwell during an exam?
-How and when will I receive my exam results?
-Can I request a review of my exam paper?
-Are there any penalties for missing an exam without prior notice?
-Are students required to wear face masks during in-person exams?
-Is there a minimum passing grade for exams?
-How are exams weighted in my overall course grade?
-Are there any resources for dealing with test anxiety?
-What do I need to bring with me to my exams?
-How can I find information on exam policies specific to my department?
-What is the university's policy on academic integrity during exams?"""
 
 # prossesss the question and answer strings
-Q = remove_stopwords(Q.lower())
-Q = lemmatize_word(Q)
+Q = chat_functions.remove_stopwords(q_a_string.Q.lower())
+Q = chat_functions.lemmatize_word(Q)
 
 questions = Q.split('?')
 print(f"{questions = }")
-answers = A.split('\n')
+answers = q_a_string.A.split('\n')
 print(len(questions))
 print(len(answers))
 qa_pairs = []
@@ -184,35 +46,35 @@ for i in qa_pairs:
 def process_user_input(user_input_raw):
     status = bool
     #user_input = ""
-    while user_input_raw not in ["quit", "exit", "q"]:
-        # sample user input
-        #user_input = input(">")
-        user_input = remove_stopwords(user_input_raw)
-        user_input = lemmatize_word(user_input)
-        print(user_input)
-        # find the best matching question-answer pair
-        best_match_pair = find_best_match(user_input, qa_pairs)
+    #while user_input_raw not in ["quit", "exit", "q"]:
+    # sample user input
+    #user_input = input(">")
+    user_input = chat_functions.remove_stopwords(user_input_raw)
+    user_input = chat_functions.lemmatize_word(user_input)
+    print(user_input)
+    # find the best matching question-answer pair
+    best_match_pair = chat_functions.find_best_match(user_input, qa_pairs)
 
-        # if a best matching question-answer pair was found, retrieve the answer and extract named entities
-        if best_match_pair is not None:
-            answer = best_match_pair["answer"]
-            answer_named_entities = extract_named_entities(answer)
+    # if a best matching question-answer pair was found, retrieve the answer and extract named entities
+    if best_match_pair is not None:
+        answer = best_match_pair["answer"]
+        answer_named_entities = chat_functions.extract_named_entities(answer)
 
-            # extract named entities from the user input
-            user_input_named_entities = extract_named_entities(user_input)
-            response = answer
-            status = True
-        elif user_input in ["cheers", "thanks", "thank you", "nice one"]:
-            response = "You're welcome!"
-            status = True
+        # extract named entities from the user input
+        user_input_named_entities = chat_functions.extract_named_entities(user_input)
+        response = answer
+        status = True
+    elif user_input in ["cheers", "thanks", "thank you", "nice one"]:
+        response = "You're welcome!"
+        status = True
 
-        else:
-            response = "I'm sorry, I couldn't understand your question. Can you please try again?"
-            status = False
-        #print(response)
-        log = f"{user_input_raw} - {user_input} - {response} - {status}"
-        logging.info(log)
-        return response
+    else:
+        response = "I'm sorry, I couldn't understand your question. Can you please try again?"
+        status = False
+    #print(response)
+    log = f"{user_input_raw} - {user_input} - {response} - {status}"
+    logging.info(log)
+    return response
 
 
 # Define a function to handle user input
