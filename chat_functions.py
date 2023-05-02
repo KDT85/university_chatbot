@@ -1,4 +1,3 @@
-import re
 import nltk
 from nltk import pos_tag, ne_chunk
 from nltk.corpus.reader.tagged import sent_tokenize, word_tokenize
@@ -32,16 +31,7 @@ def get_similarity_score(str1, str2):
     tokens2 = word_tokenize(str2.lower())
     return len(set(tokens1) & set(tokens2))
 
-# function to extract named entities from a string
-def extract_named_entities(text):
-    named_entities = []
-    chunks = ne_chunk(pos_tag(word_tokenize(text)))
-    for subtree in chunks.subtrees():
-        if subtree.label() == 'NE':
-            named_entity = " ".join([token for token, pos in subtree.leaves()])
-            named_entities.append(named_entity)
-    return named_entities
-
+# function to take a string and return a list of word tokens
 def tokenize_word(txt):
     tokenized_word = word_tokenize(txt)
     return tokenized_word
@@ -49,7 +39,7 @@ def tokenize_word(txt):
 # function to remove stop words
 stop_words = set(stopwords.words('english'))
 def remove_stopwords(text):
-    sent_tokens = sent_tokenize(text)
+    #sent_tokens = sent_tokenize(text)
     cleaned = []
     word_tokens = word_tokenize(text)
     for words in word_tokens:

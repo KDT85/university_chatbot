@@ -39,12 +39,9 @@ def process_user_input(user_input_raw):
     # if a best matching question-answer pair was found, retrieve the answer and extract named entities
     if best_match_pair is not None:
         answer = best_match_pair["answer"]
-        answer_named_entities = chat_functions.extract_named_entities(answer)
-
-        # extract named entities from the user input
-        user_input_named_entities = chat_functions.extract_named_entities(user_input)
         response = answer
         status = True
+    
     elif user_input in ["cheers", "thanks", "thank you", "nice one"]:
         response = "You're welcome!"
         status = True
@@ -90,7 +87,7 @@ root.geometry('400x600')
 root.configure(bg='#d4040b')
 
 # Create a label for the logo
-logo = tk.PhotoImage(file=r"C:\Users\Ki\source\repos\KDT85\university_chatbot\staffordshire-university-logo.xc23287d6.png")
+logo = tk.PhotoImage(file=r"C:\Users\kital\Source\Repos\KDT85\university_chatbot\staffordshire-university-logo.xc23287d6.png")
 logo_label = tk.Label(root, image=logo)
 logo_label.pack(pady=10)
 
