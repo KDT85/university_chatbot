@@ -9,13 +9,20 @@ Original file is located at
 """
 
 # our imports
+import re
 import nltk
 from nltk import pos_tag, ne_chunk
 from nltk.corpus.reader.tagged import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+
 import tkinter as tk
+
 import webbrowser
+
+import logging
+logging.basicConfig(filename = "chatbot.log", level=logging.INFO, 
+                    format='%(asctime)s - %(message)s')
 
 
 nltk.download('wordnet')
@@ -90,7 +97,7 @@ def lemmatize_word(word):
     return joined
 
 # a string containg the questions for our chatbot
-A = '''The exam season for undergraduate students is from Monday 15 May to Saturday 3 June 2023 and for postgraduate students it varies by department.
+A = """The exam season for undergraduate students is from Monday 15 May to Saturday 3 June 2023 and for postgraduate students it varies by department.
 You can access your exam timetable through the university's online portal.
 Due to COVID-19, there may be changes in exam locations so it's best to check with your department.
 The university has a policy on academic integrity during exams which states that only materials specified by the instructor are allowed during exams.
@@ -120,7 +127,7 @@ Yes, many universities offer resources to help students cope with test anxiety. 
 The specific requirements for exam materials may vary depending on the course and university. It is best to check your course syllabus or ask your course instructor for the specific requirements for each exam.
 You can find information on exam policies specific to your department by checking your department's website or speaking with your departmental academic advisor. You can also check your course syllabus for information on the specific policies for each course exam.
 You may be able to request a review of your exam paper, depending on your university and program. You should check with your academic services or department for specific guidelines and procedures.
-'''
+"""
 
 # a string containg answers to the questions
 Q = """When does the exam season start and end?
@@ -174,13 +181,13 @@ for i in qa_pairs:
 
 
 # Define a function to process user input
-def process_user_input(user_input):
-
+def process_user_input(user_input_raw):
+    status = bool
     #user_input = ""
-    while user_input not in ["quit", "exit", "q"]:
+    while user_input_raw not in ["quit", "exit", "q"]:
         # sample user input
         #user_input = input(">")
-        user_input = remove_stopwords(user_input)
+        user_input = remove_stopwords(user_input_raw)
         user_input = lemmatize_word(user_input)
         print(user_input)
         # find the best matching question-answer pair
@@ -194,10 +201,17 @@ def process_user_input(user_input):
             # extract named entities from the user input
             user_input_named_entities = extract_named_entities(user_input)
             response = answer
+            status = True
+        elif user_input in ["cheers", "thanks", "thank you", "nice one"]:
+            response = "You're welcome!"
+            status = True
 
         else:
             response = "I'm sorry, I couldn't understand your question. Can you please try again?"
+            status = False
         #print(response)
+        log = f"{user_input_raw} - {user_input} - {response} - {status}"
+        logging.info(log)
         return response
 
 
