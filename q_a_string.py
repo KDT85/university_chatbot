@@ -28,7 +28,7 @@ The weight of exams in your overall course grade may vary depending on the cours
 Yes, many universities offer resources to help students cope with test anxiety. These may include counseling services, stress-management workshops, and other support programs. It is best to check with your university's counseling center or student support services for available resources.
 The specific requirements for exam materials may vary depending on the course and university. It is best to check your course syllabus or ask your course instructor for the specific requirements for each exam.
 You can find information on exam policies specific to your department by checking your department's website or speaking with your departmental academic advisor. You can also check your course syllabus for information on the specific policies for each course exam.
-You may be able to request a review of your exam paper, depending on your university and program. You should check with your academic services or department for specific guidelines and procedures.
+The university has a strict policy on academic integrity during exams. It is expected that all students uphold the highest standards of academic integrity and honesty while taking exams. The university prohibits any form of cheating, plagiarism, or other forms of academic dishonesty.
 """
 
 # a string containg answers to the questions

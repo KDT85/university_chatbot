@@ -36,7 +36,6 @@ def get_similarity_score(str1, str2):
 def extract_named_entities(text):
     named_entities = []
     chunks = ne_chunk(pos_tag(word_tokenize(text)))
-    print(chunks)
     for subtree in chunks.subtrees():
         if subtree.label() == 'NE':
             named_entity = " ".join([token for token, pos in subtree.leaves()])
@@ -53,7 +52,6 @@ def remove_stopwords(text):
     sent_tokens = sent_tokenize(text)
     cleaned = []
     word_tokens = word_tokenize(text)
-    #print(word_tokens)
     for words in word_tokens:
         if words not in stop_words:
             cleaned.append(words)
