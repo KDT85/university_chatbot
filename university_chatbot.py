@@ -1,6 +1,3 @@
-
-
-
 import chat_functions
 import q_a_string
 import tkinter as tk
@@ -87,7 +84,7 @@ root.geometry('400x600')
 root.configure(bg='#d4040b')
 
 # Create a label for the logo
-logo = tk.PhotoImage(file=r"C:\Users\kital\Source\Repos\KDT85\university_chatbot\staffordshire-university-logo.xc23287d6.png")
+logo = tk.PhotoImage(file=r"C:\Users\Ki\Source\Repos\KDT85\university_chatbot\staffordshire-university-logo.xc23287d6.png")
 logo_label = tk.Label(root, image=logo)
 logo_label.pack(pady=10)
 
